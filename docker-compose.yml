@@ -1,0 +1,11 @@
+version: '3.8'
+
+services:
+  printer:
+    image: networked_printer
+    container_name: printer_container
+    ports:
+      - "631:631"
+    environment:
+      - MQTT_BROKER=YOUR_MQTT_BROKER_IP
+    restart: unless-stopped
