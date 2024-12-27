@@ -18,7 +18,7 @@ def on_message(client, userdata, msg):
     print(f"Received message: {msg.payload.decode()} on topic {msg.topic}")
 
 # Create an MQTT client instance
-client = mqtt.Client()
+client = mqtt.Client(protocol=mqtt.MQTTv311)  # or MQTTv5 for newer protocol support
 
 # Set username and password if provided
 if username and password:
