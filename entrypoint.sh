@@ -11,6 +11,9 @@ if [ -e /dev/usb/lp0 ]; then
   lpadmin -p USB_Printer -E -v usb:/dev/usb/lp0 -m everywhere
 fi
 
+#Install drivers - Modify for your own printer and driver
+lpadmin -p My_Printer -E -v usb://SEWOO/LK-T100 -m /usr/share/cups/model/SEWOOLKT.ppd 
+
 # Configure the printer (Replace with your printer details)
 lpadmin -p My_Printer -E -v ipp://printer_ip/printer_queue -m everywhere
 cupsctl --remote-admin --remote-any --share-printers
