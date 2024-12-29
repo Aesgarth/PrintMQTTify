@@ -11,6 +11,15 @@ RUN apt-get update && apt-get install -y \
 # Expose the CUPS web interface
 EXPOSE 631
 
+# Copy a pre-configured cupsd.conf into the container
+COPY cupsd.conf /etc/cups/cupsd.conf
+
+# Ensure permissions are correct
+RUN chmod 644 /etc/cups/cupsd.conf && chmod 644 /etc/cups/printers.conf
+
+# Start the CUPS service on container startup
+CMD ["bash", "-c", "service cups start && tail -f /var/log/cups/error_log"]
+
 # Install MQTT Python library
 RUN pip3 install paho-mqtt
 
