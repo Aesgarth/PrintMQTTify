@@ -1,32 +1,17 @@
 #!/bin/bash
-set -e
 
-# Replace placeholders in CUPS configuration files if necessary
-if [[ -n "$CUPS_ADMIN_USER" && -n "$CUPS_ADMIN_PASSWORD" ]]; then
-    echo "Setting up CUPS admin credentials..."
-    lpadmin -u "$CUPS_ADMIN_USER" -p "$CUPS_ADMIN_PASSWORD"
-fi
-
-# Ensure correct permissions for configuration files
-chown -R root:lp /etc/cups
-chmod 644 /etc/cups/cupsd.conf
-
-# Start the CUPS daemon
-echo "Starting CUPS daemon..."
+# Start the CUPS service
 service cups start
 
 # Wait for CUPS to initialize
-sleep 5
+sleep 2
 
-# Optionally preconfigure printers
-if [ -f /etc/cups/printers.conf ]; then
-    echo "Loading preconfigured printers..."
-    service cups restart
-fi
+# Configure the printer (Replace with your printer details)
+lpadmin -p My_Printer -E -v ipp://printer_ip/printer_queue -m everywhere
+cupsctl --remote-admin --remote-any --share-printers
 
-# Start the MQTT handler in the background
-echo "Starting MQTT handler..."
-python3 /app/printer_mqtt_handler.py &
+# Tail the CUPS log in the background
+tail -f /var/log/cups/error_log &
 
-# Keep the container running
-exec "$@"
+# Start the MQTT handler
+python3 /app/printer_mqtt_handler.py
