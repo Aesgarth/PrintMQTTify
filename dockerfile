@@ -19,6 +19,8 @@ RUN chmod 644 /etc/cups/cupsd.conf && chmod 644 /etc/cups/printers.conf
 
 # Start the CUPS service on container startup
 CMD ["bash", "-c", "service cups start && tail -f /var/log/cups/error_log"]
+RUN lpadmin -p My_Printer -E -v ipp://printer_ip/printer_queue -m everywhere
+RUN cupsctl --remote-admin --remote-any --share-printers
 
 # Install MQTT Python library
 RUN pip3 install paho-mqtt
