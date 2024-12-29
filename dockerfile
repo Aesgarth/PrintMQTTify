@@ -16,6 +16,9 @@ EXPOSE 631
 COPY configs/cupsd.conf /etc/cups/cupsd.conf
 COPY entrypoint.sh /app/entrypoint.sh
 
+# Copy printer drivers into the container
+COPY drivers/ /usr/share/cups/model/
+
 # Ensure permissions are correct
 RUN chmod 644 /etc/cups/cupsd.conf \
     && chmod +x /app/entrypoint.sh
