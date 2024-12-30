@@ -17,7 +17,7 @@ sleep 2
 
 # Configure USB printer if connected
 if [ -e /dev/usb/lp0 ]; then
-  lpadmin -p USB_Printer -E -v usb:/dev/usb/lp0 -m everywhere
+  lpadmin -p My_Printer -E -v usb:/dev/usb/lp0 -m everywhere
 fi
 
 #Install drivers - Modify for your own printer and driver
