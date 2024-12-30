@@ -18,6 +18,8 @@ COPY entrypoint.sh /app/entrypoint.sh
 
 # Copy printer drivers into the container
 COPY drivers/ /usr/share/cups/model/
+# Copy the rastertosewoo filter into the CUPS filters directory
+COPY drivers/SEWOO/rastertosewoo /usr/lib/cups/filter/rastertosewoo
 
 # Ensure permissions are correct
 RUN chmod 644 /app/cupsd.conf \
