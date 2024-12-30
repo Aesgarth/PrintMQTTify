@@ -5,6 +5,8 @@ echo "Copying custom cupsd.conf..."
 cp /app/cupsd.conf /etc/cups/cupsd.conf
 
 # Ensure permissions are correct
+chmod 755 /usr/lib/cups/filter/rastertosewoo
+chmod +x /usr/lib/cups/filter/rastertosewoo
 chmod 644 /etc/cups/cupsd.conf
 chown root:lp /etc/cups/cupsd.conf
 
