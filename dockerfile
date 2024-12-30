@@ -13,7 +13,7 @@ RUN apt-get update && apt-get install -y \
 EXPOSE 631
 
 # Copy the pre-configured cupsd.conf and entrypoint script
-COPY configs/cupsd.conf /etc/cups/cupsd.conf
+COPY configs/cupsd.conf /app/cupsd.conf
 COPY entrypoint.sh /app/entrypoint.sh
 
 # Copy printer drivers into the container
