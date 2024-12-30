@@ -1,6 +1,15 @@
 #!/bin/bash
 
-# Start the CUPS service
+# Copy the custom cupsd.conf file
+echo "Copying custom cupsd.conf..."
+cp /app/cupsd.conf /etc/cups/cupsd.conf
+
+# Ensure permissions are correct
+chmod 644 /etc/cups/cupsd.conf
+chown root:lp /etc/cups/cupsd.conf
+
+# Start CUPS service
+echo "Starting CUPS service..."
 service cups start
 
 # Wait for CUPS to initialize
@@ -15,7 +24,7 @@ fi
 lpadmin -p My_Printer -E -v usb://SEWOO/LK-T100 -m /usr/share/cups/model/SEWOOLKT.ppd 
 
 # Configure the printer (Replace with your printer details)
-lpadmin -p My_Printer -E -v ipp://printer_ip/printer_queue -m everywhere
+# lpadmin -p My_Printer -E -v ipp://printer_ip/printer_queue -m everywhere
 cupsctl --remote-admin --remote-any --share-printers
 
 # Tail the CUPS log in the background
