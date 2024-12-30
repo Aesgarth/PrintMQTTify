@@ -20,8 +20,8 @@ COPY entrypoint.sh /app/entrypoint.sh
 COPY drivers/ /usr/share/cups/model/
 
 # Ensure permissions are correct
-RUN chmod 644 /etc/cups/cupsd.conf \
-    && chmod +x /app/entrypoint.sh
+#RUN chmod 644 /etc/cups/cupsd.conf \
+#    && chmod +x /app/entrypoint.sh
 
 # Install MQTT Python library
 RUN pip3 install paho-mqtt
