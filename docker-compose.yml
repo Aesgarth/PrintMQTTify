@@ -1,11 +1,18 @@
 version: '3.8'
 
 services:
-  printer:
+  printer_container:
     image: networked_printer
     container_name: printer_container
+    privileged: true
     ports:
-      - "631:631"
+      - "1631:631"  # Map CUPS web interface port
+    devices:
+      - "/dev/usb/lp0:/dev/usb/lp0"  # Map USB printer
     environment:
-      - MQTT_BROKER=YOUR_MQTT_BROKER_IP
-    restart: unless-stopped
+      - MQTT_BROKER=<IP address of your MQTT broker>
+      - MQTT_USERNAME=<Username for the above broker>
+      - MQTT_PASSWORD=<password for above user>
+      - MQTT_TOPIC=printer/commands #change to the MQTT topic you want to subscribe to.
+    stdin_open: true  # Equivalent to `-it` (interactive terminal)
+    tty: true         # Keeps the container running interactively
