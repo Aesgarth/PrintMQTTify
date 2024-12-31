@@ -5,7 +5,7 @@ import os
 broker = os.getenv("MQTT_BROKER", "localhost")
 username = os.getenv("MQTT_USERNAME")
 password = os.getenv("MQTT_PASSWORD")
-topic = os.getenv("MQTT_TOPIC", "printer/commands")
+topic = os.getenv("MQTT_TOPIC", "printer/print")
 
 def on_connect(client, userdata, flags, rc):
     if rc == 0:
