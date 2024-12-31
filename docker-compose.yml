@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   printmqttify:
     image: printmqttify  # Updated image name
