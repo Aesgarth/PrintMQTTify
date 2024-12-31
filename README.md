@@ -59,6 +59,40 @@ Replace the placeholders (`<your-mqtt-broker-ip>`, `<your-mqtt-username>`, etc.)
 
 ---
 
+## Using Docker Compose
+
+Alternatively, you can use Docker Compose to manage the container. Create a `docker-compose.yml` file with the following content:
+
+```yaml
+version: '3.8'
+
+services:
+  printmqttify:
+    image: printmqttify
+    container_name: printmqttify_container
+    privileged: true
+    ports:
+      - "1631:631"
+    devices:
+      - "/dev/usb/lp0:/dev/usb/lp0"
+    environment:
+      - MQTT_BROKER=<your-mqtt-broker-ip>
+      - MQTT_USERNAME=<your-mqtt-username>
+      - MQTT_PASSWORD=<your-mqtt-password>
+      - MQTT_TOPIC=printer/commands
+      - ADMIN_USER=admin
+      - ADMIN_PASS=adminpassword
+    stdin_open: true
+    tty: true
+```
+
+Then start the container with:
+```bash
+docker-compose up -d
+```
+
+---
+
 ## Setup
 
 ### 1. Access the CUPS Web Interface
@@ -127,5 +161,4 @@ Contributions are welcome! Feel free to submit issues or pull requests on GitHub
 
 ## License
 This project is licensed under the Creative Commons Zero v1.0 Universal (CC0 1.0). See the `LICENSE` file for details.
-
 
