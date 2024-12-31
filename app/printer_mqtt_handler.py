@@ -50,20 +50,20 @@ def generate_pdf(title, message):
     margin = 5 * mm  # Margins for the receipt
     content_width = page_width - (2 * margin)
 
-    # Canvas setup with a reasonable initial height
+    # Initial height, updated dynamically based on content
     pdf_path = "/tmp/print_job.pdf"
-    page_height = 200 * mm  # Initial height; dynamically adjusted later
+    page_height = 200 * mm
     c = canvas.Canvas(pdf_path, pagesize=(page_width, page_height))
 
     # Title Section
-    y = page_height - margin  # Start at the top margin
+    y = page_height - margin
     c.setFont("Helvetica-Bold", 12)
     title_lines = wrap_text(c, title, "Helvetica-Bold", 12, content_width)
     for line in title_lines:
-        y -= 14  # Line height
+        y -= 14
         c.drawString(margin, y, line)
 
-    # Add a Divider
+    # Divider
     y -= 10
     c.line(margin, y, page_width - margin, y)
 
@@ -72,11 +72,11 @@ def generate_pdf(title, message):
     c.setFont("Helvetica", 10)
     message_lines = wrap_text(c, message, "Helvetica", 10, content_width)
     for line in message_lines:
-        y -= 12  # Line height
+        y -= 12
         c.drawString(margin, y, line)
 
-    # Adjust page height dynamically
-    final_page_height = max(page_height - y + margin, 80 * mm)  # Ensure minimum height
+    # Adjust the page height based on final content placement
+    final_page_height = max(page_height - y + margin, 80 * mm)
     c.setPageSize((page_width, final_page_height))
 
     # Footer Section
@@ -85,21 +85,21 @@ def generate_pdf(title, message):
     c.setFont("Helvetica-Oblique", 8)
     c.drawString(margin, y, footer_text)
 
-    # Finalize and Save PDF
+    # Finalize the PDF
     c.showPage()
     c.save()
     return pdf_path
 
-def wrap_text(canvas, text, font_name, font_size, max_width):
+def wrap_text(c, text, font_name, font_size, max_width):
     """Wrap text to fit within a given width."""
-    canvas.setFont(font_name, font_size)
+    c.setFont(font_name, font_size)
     words = text.split()
     lines = []
     current_line = []
 
     for word in words:
         test_line = " ".join(current_line + [word])
-        if canvas.stringWidth(test_line, font_name, font_size) <= max_width:
+        if c.stringWidth(test_line, font_name, font_size) <= max_width:
             current_line.append(word)
         else:
             lines.append(" ".join(current_line))
