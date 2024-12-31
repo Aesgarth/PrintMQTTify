@@ -7,6 +7,7 @@ RUN apt-get update && apt-get install -y \
     cups-client \
     python3 \
     python3-pip \
+    libcupsimage2 \
     && apt-get clean
 
 # Expose the CUPS web interface
