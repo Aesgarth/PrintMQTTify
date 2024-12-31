@@ -4,7 +4,7 @@ services:
     container_name: printmqttify_container  # Reflects the new name
     privileged: true
     ports:
-      - "1631:631"  # Map CUPS web interface port
+      - "1631:631"  # Map CUPS web interface port Using 1631 avoids conflict with CUPS running on the host. Use "631:631" if not running CUPS on the host machine.
     devices:
       - "/dev/usb/lp0:/dev/usb/lp0"  # Map USB printer
     environment:
