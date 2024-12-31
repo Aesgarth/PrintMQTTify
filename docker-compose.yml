@@ -1,18 +1,20 @@
 version: '3.8'
 
 services:
-  printer_container:
-    image: networked_printer
-    container_name: printer_container
+  printmqttify:
+    image: printmqttify  # Updated image name
+    container_name: printmqttify_container  # Reflects the new name
     privileged: true
     ports:
       - "1631:631"  # Map CUPS web interface port
     devices:
       - "/dev/usb/lp0:/dev/usb/lp0"  # Map USB printer
     environment:
-      - MQTT_BROKER=<IP address of your MQTT broker>
-      - MQTT_USERNAME=<Username for the above broker>
-      - MQTT_PASSWORD=<password for above user>
-      - MQTT_TOPIC=printer/commands #change to the MQTT topic you want to subscribe to.
+      - MQTT_BROKER=192.168.0.71  # Replace with actual MQTT broker IP
+      - MQTT_USERNAME=mqtt-username 
+      - MQTT_PASSWORD=password
+      - MQTT_TOPIC=printer/commands  # Adjust topic if necessary
+      - ADMIN_USER=admin  # Admin user for CUPS
+      - ADMIN_PASS=adminpassword  # Admin password for CUPS
     stdin_open: true  # Equivalent to `-it` (interactive terminal)
     tty: true         # Keeps the container running interactively
