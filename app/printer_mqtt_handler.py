@@ -62,7 +62,7 @@ def generate_pdf(title, message):
     # Title Section
     y = page_height - margin  # Start at the top margin
     c.setFont("Helvetica-Bold", 12)
-    wrapped_title = simpleSplit(title, "Helvetica-Bold", content_width)
+    wrapped_title = simpleSplit(title, c._font, content_width)  # Corrected usage
     for line in wrapped_title:
         y -= 14  # Line height
         c.drawString(margin, y, line)
@@ -74,7 +74,7 @@ def generate_pdf(title, message):
     # Message Section
     y -= 20
     c.setFont("Helvetica", 10)
-    wrapped_message = simpleSplit(message, "Helvetica", content_width)
+    wrapped_message = simpleSplit(message, c._font, content_width)  # Corrected usage
     for line in wrapped_message:
         y -= 12  # Line height
         c.drawString(margin, y, line)
