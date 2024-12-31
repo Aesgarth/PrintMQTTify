@@ -5,8 +5,10 @@ echo "Copying custom cupsd.conf..."
 cp /app/cupsd.conf /etc/cups/cupsd.conf
 
 # Ensure permissions are correct
+## The following 2 lines are specific to the Sewoo printer I have been using. 
 chmod 755 /usr/lib/cups/filter/rastertosewoo
 chmod +x /usr/lib/cups/filter/rastertosewoo
+# The following 2 lines are for the cups config file
 chmod 644 /etc/cups/cupsd.conf
 chown root:lp /etc/cups/cupsd.conf
 
@@ -18,11 +20,14 @@ service cups start
 sleep 2
 
 # Configure USB printer if connected
+# THis should be modified or removed to match your printer
 if [ -e /dev/usb/lp0 ]; then
   lpadmin -p My_Printer -E -v usb:/dev/usb/lp0 -m everywhere
 fi
 
 #Install drivers - Modify for your own printer and driver
+#This driver is for SEWOO LKT series printers. Tested only on an LK-T100 printer.
+#Modify for your own needs.
 lpadmin -p My_Printer -E -v usb:/dev/usb/lp0 -m SEWOOLKT.ppd 
 
 # Configure the printer (Replace with your printer details)
