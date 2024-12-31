@@ -20,7 +20,8 @@ def on_connect(client, userdata, flags, rc):
 
 def on_message(client, userdata, msg):
     """Callback for when a message is received."""
-    print(f"Received message: {msg.payload.decode()} on topic {msg.topic}")    try:
+    print(f"Received message: {msg.payload.decode()} on topic {msg.topic}")    
+    try:
         payload = json.loads(msg.payload.decode())
         printer_name = payload.get("printer_name")
         title = payload.get("title", "Print Job")
