@@ -38,6 +38,9 @@ RUN chmod 644 $APP_DIR/cupsd.conf && chmod +x $APP_DIR/entrypoint.sh
 # Install Python dependencies
 RUN pip3 install paho-mqtt
 
+# Install ReportLab for advanced PDF generation
+RUN pip3 install reportlab
+
 # Copy the MQTT handler script
 COPY app/printer_mqtt_handler.py $APP_DIR/printer_mqtt_handler.py
 WORKDIR $APP_DIR
