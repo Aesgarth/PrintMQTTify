@@ -23,6 +23,10 @@ else
   echo "Admin user already exists."
 fi
 
+# Start Avahi Daemon
+echo "Starting Avahi Daemon..."
+service avahi-daemon start
+
 # Stop any running CUPS processes
 echo "Ensuring no conflicting CUPS processes..."
 pkill cupsd || true
