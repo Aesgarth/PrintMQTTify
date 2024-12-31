@@ -41,7 +41,7 @@ def print_message(printer_name, message):
     try:
         result = subprocess.run(
             ["lp", "-d", printer_name],
-            input=message.encode(),
+            input=message,
             text=True,
             capture_output=True
         )
