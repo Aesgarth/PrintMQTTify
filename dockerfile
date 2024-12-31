@@ -24,7 +24,7 @@ COPY drivers/SEWOO/sewoocupsinstall_amd64.tar.gz /tmp/sewoocupsinstall_amd64.tar
 RUN tar -zxvf /tmp/sewoocupsinstall_amd64.tar.gz -C /tmp && \
     cd /tmp/sewoocupsinstall_amd64 && \
     chmod +x setup.sh && \
-    sudo sh setup.sh
+    sh setup.sh
 
 # Ensure permissions are correct
 RUN chmod 644 /app/cupsd.conf \
