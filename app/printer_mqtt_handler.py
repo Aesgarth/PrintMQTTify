@@ -43,27 +43,23 @@ def on_message(client, userdata, msg):
     except Exception as e:
         print(f"Error handling message: {e}")
 
-from reportlab.lib.pagesizes import mm
-from reportlab.pdfgen import canvas
-from reportlab.lib.utils import simpleSplit
-
 def generate_pdf(title, message):
     """Generate a PDF optimized for thermal receipt printers."""
-    # Fixed page width and initial height
+    # Fixed page width
     page_width = 80 * mm  # 80mm in points
-    page_height = 200 * mm  # Initial height; will expand dynamically if needed
     margin = 5 * mm  # Margins for the receipt
     content_width = page_width - (2 * margin)
 
-    # Canvas setup with dynamic page size
+    # Canvas setup with a reasonable initial height
     pdf_path = "/tmp/print_job.pdf"
+    page_height = 200 * mm  # Initial height; dynamically adjusted later
     c = canvas.Canvas(pdf_path, pagesize=(page_width, page_height))
 
     # Title Section
     y = page_height - margin  # Start at the top margin
     c.setFont("Helvetica-Bold", 12)
-    wrapped_title = simpleSplit(title, "Helvetica-Bold", content_width)  # Corrected usage
-    for line in wrapped_title:
+    title_lines = wrap_text(c, title, "Helvetica-Bold", 12, content_width)
+    for line in title_lines:
         y -= 14  # Line height
         c.drawString(margin, y, line)
 
@@ -74,8 +70,8 @@ def generate_pdf(title, message):
     # Message Section
     y -= 20
     c.setFont("Helvetica", 10)
-    wrapped_message = simpleSplit(message, "Helvetica", content_width)  # Corrected usage
-    for line in wrapped_message:
+    message_lines = wrap_text(c, message, "Helvetica", 10, content_width)
+    for line in message_lines:
         y -= 12  # Line height
         c.drawString(margin, y, line)
 
@@ -93,6 +89,26 @@ def generate_pdf(title, message):
     c.showPage()
     c.save()
     return pdf_path
+
+def wrap_text(canvas, text, font_name, font_size, max_width):
+    """Wrap text to fit within a given width."""
+    canvas.setFont(font_name, font_size)
+    words = text.split()
+    lines = []
+    current_line = []
+
+    for word in words:
+        test_line = " ".join(current_line + [word])
+        if canvas.stringWidth(test_line, font_name, font_size) <= max_width:
+            current_line.append(word)
+        else:
+            lines.append(" ".join(current_line))
+            current_line = [word]
+
+    if current_line:
+        lines.append(" ".join(current_line))
+
+    return lines
 
 def send_to_printer(printer_name, pdf_path):
     """Send the generated PDF to the printer."""
