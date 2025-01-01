@@ -1,0 +1,8 @@
+{
+  "name": "PrintMQTTify Add-on",
+  "description": "Add-ons for printing with MQTT",
+  "url": "https://github.com/Aesgarth/PrintMQTTify",
+  "version": "1.0.0",
+  "slug": "printmqttify",
+  "arch": ["amd64", "armv7", "arm64"]
+}
