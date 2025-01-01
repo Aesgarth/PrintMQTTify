@@ -1,7 +1,7 @@
 services:
   printmqttify:
-    image: printmqttify  # Updated image name
-    container_name: printmqttify_container  # Reflects the new name
+    image: printmqttify  #image name
+    container_name: printmqttify_container  
     privileged: true
     ports:
       - "631:631"  # Map CUPS web interface port Using 1631 avoids conflict with CUPS running on the host. Use "631:631" if not running CUPS on the host machine.
