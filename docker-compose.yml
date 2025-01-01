@@ -4,11 +4,11 @@ services:
     container_name: printmqttify_container  # Reflects the new name
     privileged: true
     ports:
-      - "1631:631"  # Map CUPS web interface port Using 1631 avoids conflict with CUPS running on the host. Use "631:631" if not running CUPS on the host machine.
+      - "631:631"  # Map CUPS web interface port Using 1631 avoids conflict with CUPS running on the host. Use "631:631" if not running CUPS on the host machine.
     devices:
-      - "/dev/usb/lp0:/dev/usb/lp0"  # Map USB printer
+      - "/dev/usb/lp0:/dev/usb/lp0"  # Map USB printer This needs to be configured to match your printers USB connection
     environment:
-      - MQTT_BROKER=192.168.0.71  # Replace with actual MQTT broker IP
+      - MQTT_BROKER=192.168.0.71  # Replace with actual MQTT broker IP. If using the Mosquitto add-on in Home Assistant this is probably your Home Assistant IP
       - MQTT_USERNAME=mqtt-username 
       - MQTT_PASSWORD=password
       - MQTT_TOPIC=printer/commands  # Adjust topic if necessary
