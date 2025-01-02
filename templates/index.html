@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PrintMQTTify Control Panel</title>
+</head>
+<body>
+    <h1>PrintMQTTify Control Panel</h1>
+    
+    <form id="settings-form">
+        <label>MQTT Broker:</label>
+        <input type="text" name="mqtt_broker" value="{{ mqtt_broker }}" required><br>
+        <label>MQTT Topic:</label>
+        <input type="text" name="mqtt_topic" value="{{ mqtt_topic }}" required><br>
+        <label>CUPS Admin Username:</label>
+        <input type="text" name="cups_admin_user" value="{{ cups_admin_user }}" required><br>
+        <label>CUPS Admin Password:</label>
+        <input type="password" name="cups_admin_pass" required><br>
+        <button type="submit">Save Settings</button>
+    </form>
+
+    <h2>Status</h2>
+    <button id="status-btn">Check Status</button>
+    <pre id="status-output"></pre>
+
+    <h2>Test Print</h2>
+    <form id="test-print-form">
+        <label>Printer Name:</label>
+        <input type="text" name="printer_name" required><br>
+        <button type="submit">Send Test Print</button>
+    </form>
+
+    <script>
+        document.getElementById('settings-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            const response = await fetch('/update-settings', { method: 'POST', body: formData });
+            alert(await response.text());
+        });
+
+        document.getElementById('status-btn').addEventListener('click', async () => {
+            const response = await fetch('/status');
+            const data = await response.json();
+            document.getElementById('status-output').textContent = JSON.stringify(data, null, 2);
+        });
+
+        document.getElementById('test-print-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            const response = await fetch('/test-print', { method: 'POST', body: formData });
+            alert(await response.text());
+        });
+    </script>
+</body>
+</html>
