@@ -6,10 +6,31 @@ PrintMQTTify is a Docker-based solution that bridges MQTT messages to a CUPS pri
 
 ## Features
 
-- Provides a fully functional CUPS server, capable of managing multiple printers and supporting advanced configurations. While the integration is designed for seamless operation, certain CUPS features like network discovery and complex job queuing may depend on additional host configurations.
-- Listens for MQTT messages to process print jobs.
-- Supports USB printers with custom drivers.
-- Designed for use with Home Assistant and other MQTT-enabled systems.
+- **CUPS Integration**: Provides a fully functional CUPS server, capable of managing multiple printers and supporting advanced configurations.
+- **MQTT Print Jobs**: Listens for MQTT messages to process print jobs efficiently.
+- **USB Printer Support**: Compatible with USB printers and supports custom drivers.
+- **Customizable Output**: Allows for tailored print outputs, such as formatted receipts or shopping lists.
+- **Web-Based Control Panel**: Includes an optional web interface for managing basic settings and monitoring.
+- **Designed for Home Automation**: Perfect for smart home environments like Home Assistant.
+
+---
+
+## Use Cases
+
+Here are some scenarios where PrintMQTTify shines:
+
+1. **Smart Home Shopping Lists**:
+   - Automatically print unchecked items from a Home Assistant shopping list.
+   - Example scripts are available in the [HA Script Examples](https://github.com/Aesgarth/PrintMQTTify/blob/main/docs/HA%20Script%20Examples.md).
+
+2. **Event Reminders**:
+   - Print reminders or daily schedules directly from your smart home system.
+
+3. **Custom Receipts**:
+   - Generate and print receipts with tailored formatting for events or transactions.
+
+4. **Dynamic Content Printing**:
+   - Send custom messages, recipes, or instructions directly to your printer via MQTT.
 
 ---
 
@@ -25,41 +46,15 @@ PrintMQTTify is a Docker-based solution that bridges MQTT messages to a CUPS pri
 
 3. **MQTT Broker**: A working MQTT broker (e.g., Mosquitto) is required. Note the broker’s IP address, username, and password.
 
----
+4. **USB Printer Identification**:
+   - Use `lsusb` and `dmesg | grep usb` to locate the device path of your printer.
+   - Ensure the path (e.g., `/dev/usb/lp0`) is passed to the container.
 
-## Identifying Your USB Printer
-
-To ensure the correct USB printer is passed to the container, follow these steps:
-
-1. **List USB Devices**:
-   Run the following command on your host machine to list all connected USB devices:
+   Example:
    ```bash
    lsusb
-   ```
-   Example output:
-   ```
-   Bus 002 Device 002: ID 0525:a700 Netchip Technology, Inc.
-   ```
-
-2. **Find the Printer Path**:
-   Once you identify your printer, use the following command to locate the device path:
-   ```bash
    dmesg | grep usb
    ```
-   Look for a log entry indicating the device's path, such as `/dev/usb/lp0`.
-
-3. **Verify Device Path**:
-   Ensure the device path exists:
-   ```bash
-   ls /dev/usb/lp*
-   ```
-   Example output:
-   ```
-   /dev/usb/lp0
-   ```
-
-4. **Use the Device Path**:
-   Pass the verified device path (e.g., `/dev/usb/lp0`) to the container using the `--device` flag in `docker run` or in the `devices` section of your Docker Compose file.
 
 ---
 
@@ -214,35 +209,7 @@ docker logs printmqttify_container
 
 ## Troubleshooting
 
-### Changing Port Mapping
-
-If the default port `631` is already in use by another service (e.g., a host-installed CUPS instance), you can modify the port mapping in the Docker run or Compose configuration:
-
-- For `docker run`, replace `-p 631:631` with an alternative mapping like `-p 1631:631`.
-- For Docker Compose, update the `ports` section to:
-  ```yaml
-  ports:
-    - "1631:631"
-  ```
-
-Ensure you update the port in the browser URL to match the new mapping (e.g., `https://<host-ip>:1631`).
-
-### Common Issues
-
-1. **Cannot Access CUPS Web Interface**:
-
-   - Ensure the container is running.
-   - Confirm that port `631` is not blocked by a firewall.
-
-2. **Printer Not Printing**:
-
-   - Check the printer status in the CUPS web interface.
-   - Ensure the correct driver is installed.
-
-3. **MQTT Issues**:
-
-   - Verify the MQTT broker details in the container environment variables.
-   - Check the MQTT topic for incoming messages.
+For troubleshooting steps and common issues, see the [Troubleshooting Documentation](https://github.com/Aesgarth/PrintMQTTify/blob/main/docs/troubleshooting.md).
 
 ---
 
@@ -251,6 +218,7 @@ Ensure you update the port in the browser URL to match the new mapping (e.g., `h
 Contributions are welcome! Feel free to submit issues or pull requests on GitHub.
 
 ---
+
 
 ## License
 
