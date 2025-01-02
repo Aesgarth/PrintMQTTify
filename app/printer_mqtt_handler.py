@@ -1,6 +1,8 @@
 import paho.mqtt.client as mqtt
 import os
 import subprocess
+import time
+import threading
 from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import mm
 import json
@@ -10,6 +12,44 @@ broker = os.getenv("MQTT_BROKER", "localhost")
 username = os.getenv("MQTT_USERNAME")
 password = os.getenv("MQTT_PASSWORD")
 topic = os.getenv("MQTT_TOPIC", "printer/commands")
+
+import time
+import threading
+
+# Add a new topic for availability
+availability_topic = "printer/availability"
+
+def publish_availability(client, interval=60):
+    """Publish printer availability periodically."""
+    def publish_status():
+        while True:
+            try:
+                # Check if the printer is available (example logic, customize as needed)
+                result = subprocess.run(["lpstat", "-p"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+                status = "online" if "idle" in result.stdout else "offline"
+            except Exception:
+                status = "offline"
+
+            client.publish(availability_topic, status, qos=1, retain=True)
+            time.sleep(interval)
+    
+    thread = threading.Thread(target=publish_status, daemon=True)
+    thread.start()
+
+# Update on_connect to publish initial availability status
+def on_connect(client, userdata, flags, rc):
+    """Callback for when the client connects to the MQTT broker."""
+    if rc == 0:
+        print("Connected to MQTT broker!")
+        client.subscribe(topic)
+        # Publish availability as 'online' when connected
+        client.publish(availability_topic, "online", qos=1, retain=True)
+    else:
+        print(f"Failed to connect, return code {rc}")
+
+# Start the availability publisher
+publish_availability(client)
+
 
 def on_connect(client, userdata, flags, rc):
     """Callback for when the client connects to the MQTT broker."""
