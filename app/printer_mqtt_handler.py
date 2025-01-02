@@ -23,12 +23,15 @@ def publish_availability(client, interval=60):
                 # Check if the printer is available
                 result = subprocess.run(["lpstat", "-p"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
                 status = "online" if "idle" in result.stdout else "offline"
-            except Exception:
+            except Exception as e:
+                print(f"Error checking printer status: {e}")
                 status = "offline"
 
-            client.publish(availability_topic, status, qos=1, retain=True)
+            # Debug log and publish the status
+            print(f"Publishing status: {status}")
+            client.publish(availability_topic, str(status), qos=1, retain=True)
             time.sleep(interval)
-    
+
     thread = threading.Thread(target=publish_status, daemon=True)
     thread.start()
 
@@ -38,11 +41,11 @@ def on_connect(client, userdata, flags, rc):
     if rc == 0:
         print("Connected to MQTT broker!")
         client.subscribe(topic)
-        client.publish(availability_topic, "online", qos=1, retain=True)
         # Start publishing availability
         publish_availability(client)
     else:
         print(f"Failed to connect, return code {rc}")
+
 
 
 def on_message(client, userdata, msg):
@@ -50,6 +53,7 @@ def on_message(client, userdata, msg):
     print(f"Received message: {msg.payload.decode()} on topic {msg.topic}")
     try:
         payload = json.loads(msg.payload.decode())
+        print(f"Parsed payload: {payload}")
         printer_name = payload.get("printer_name")
         title = payload.get("title", "Print Job")
         message = payload.get("message", "No message provided")
