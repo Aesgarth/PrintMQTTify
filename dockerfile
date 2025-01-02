@@ -24,6 +24,9 @@ ENV CUPS_CONF_DIR=/etc/cups \
 COPY configs/cupsd.conf $APP_DIR/cupsd.conf
 COPY entrypoint.sh $APP_DIR/entrypoint.sh
 
+# Copy the templates directory
+COPY app/templates /app/templates
+
 # Copy and install the SEWOO drivers
 COPY drivers/SEWOO/sewoocupsinstall_amd64.tar.gz $DRIVER_ARCHIVE
 RUN tar -zxvf $DRIVER_ARCHIVE -C /tmp && \
