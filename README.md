@@ -219,7 +219,7 @@ Contributions are welcome! Feel free to submit issues or pull requests on GitHub
 
 ---
 
-
 ## License
 
-This project is licensed under the Creative Commons Zero v1.0
+This project is licensed under the Creative Commons Zero v1.0 Universal (CC0 1.0) License. See the [LICENSE](https://github.com/Aesgarth/PrintMQTTify/blob/main/LICENSE) file for more details.
+
