@@ -27,6 +27,42 @@ PrintMQTTify is a Docker-based solution that bridges MQTT messages to a CUPS pri
 
 ---
 
+## Identifying Your USB Printer
+
+To ensure the correct USB printer is passed to the container, follow these steps:
+
+1. **List USB Devices**:
+   Run the following command on your host machine to list all connected USB devices:
+   ```bash
+   lsusb
+   ```
+   Example output:
+   ```
+   Bus 002 Device 002: ID 0525:a700 Netchip Technology, Inc.
+   ```
+
+2. **Find the Printer Path**:
+   Once you identify your printer, use the following command to locate the device path:
+   ```bash
+   dmesg | grep usb
+   ```
+   Look for a log entry indicating the device's path, such as `/dev/usb/lp0`.
+
+3. **Verify Device Path**:
+   Ensure the device path exists:
+   ```bash
+   ls /dev/usb/lp*
+   ```
+   Example output:
+   ```
+   /dev/usb/lp0
+   ```
+
+4. **Use the Device Path**:
+   Pass the verified device path (e.g., `/dev/usb/lp0`) to the container using the `--device` flag in `docker run` or in the `devices` section of your Docker Compose file.
+
+---
+
 ## Installation
 
 ### 1. Clone the Repository
@@ -191,10 +227,12 @@ If the default port `631` is already in use by another service (e.g., a host-ins
 
 Ensure you update the port in the browser URL to match the new mapping (e.g., `https://<host-ip>:1631`).
 
+### Common Issues
+
 1. **Cannot Access CUPS Web Interface**:
 
    - Ensure the container is running.
-   - Confirm that port `1631` is not blocked by a firewall.
+   - Confirm that port `631` is not blocked by a firewall.
 
 2. **Printer Not Printing**:
 
@@ -216,5 +254,4 @@ Contributions are welcome! Feel free to submit issues or pull requests on GitHub
 
 ## License
 
-This project is licensed under the Creative Commons Zero v1.0 Universal (CC0 1.0). See the `LICENSE` file for details.
-
+This project is licensed under the Creative Commons Zero v1.0
