@@ -38,6 +38,9 @@ RUN chmod 644 $APP_DIR/cupsd.conf && chmod +x $APP_DIR/entrypoint.sh
 # Install Python dependencies
 RUN pip3 install paho-mqtt
 
+# Install Flask
+RUN pip3 install flask
+
 # Install ReportLab for advanced PDF generation
 RUN pip3 install reportlab
 
