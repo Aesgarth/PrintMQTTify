@@ -50,6 +50,10 @@ cupsctl --remote-admin --remote-any --share-printers
 echo "Tailing CUPS logs..."
 tail -f /var/log/cups/error_log &
 
+# Start the Flask web control panel
+echo "Starting Flask web control panel..."
+python3 /app/web_control_panel.py &
+
 # Start the MQTT handler
 echo "Starting MQTT handler..."
 python3 /app/printer_mqtt_handler.py
