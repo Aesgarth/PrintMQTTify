@@ -12,19 +12,15 @@ broker = os.getenv("MQTT_BROKER", "localhost")
 username = os.getenv("MQTT_USERNAME")
 password = os.getenv("MQTT_PASSWORD")
 topic = os.getenv("MQTT_TOPIC", "printer/commands")
-
-import time
-import threading
-
-# Add a new topic for availability
 availability_topic = "printer/availability"
+
 
 def publish_availability(client, interval=60):
     """Publish printer availability periodically."""
     def publish_status():
         while True:
             try:
-                # Check if the printer is available (example logic, customize as needed)
+                # Check if the printer is available
                 result = subprocess.run(["lpstat", "-p"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
                 status = "online" if "idle" in result.stdout else "offline"
             except Exception:
@@ -36,32 +32,22 @@ def publish_availability(client, interval=60):
     thread = threading.Thread(target=publish_status, daemon=True)
     thread.start()
 
-# Update on_connect to publish initial availability status
+
 def on_connect(client, userdata, flags, rc):
     """Callback for when the client connects to the MQTT broker."""
     if rc == 0:
         print("Connected to MQTT broker!")
         client.subscribe(topic)
-        # Publish availability as 'online' when connected
         client.publish(availability_topic, "online", qos=1, retain=True)
+        # Start publishing availability
+        publish_availability(client)
     else:
         print(f"Failed to connect, return code {rc}")
 
-# Start the availability publisher
-publish_availability(client)
-
-
-def on_connect(client, userdata, flags, rc):
-    """Callback for when the client connects to the MQTT broker."""
-    if rc == 0:
-        print("Connected to MQTT broker!")
-        client.subscribe(topic)
-    else:
-        print(f"Failed to connect, return code {rc}")
 
 def on_message(client, userdata, msg):
     """Callback for when a message is received."""
-    print(f"Received message: {msg.payload.decode()} on topic {msg.topic}")    
+    print(f"Received message: {msg.payload.decode()} on topic {msg.topic}")
     try:
         payload = json.loads(msg.payload.decode())
         printer_name = payload.get("printer_name")
@@ -81,6 +67,7 @@ def on_message(client, userdata, msg):
         print(f"Error decoding JSON: {e}")
     except Exception as e:
         print(f"Error handling message: {e}")
+
 
 def generate_pdf(title, message):
     """Generate a PDF optimized for thermal receipt printers."""
@@ -125,6 +112,7 @@ def generate_pdf(title, message):
         print(f"Error generating PDF: {e}")
         return None
 
+
 def send_to_printer(printer_name, pdf_path):
     """Send the generated PDF to the printer."""
     try:
@@ -138,19 +126,23 @@ def send_to_printer(printer_name, pdf_path):
     except subprocess.CalledProcessError as e:
         print(f"Failed to print. Error: {e.stderr.decode()}")
 
-# Create an MQTT client instance
-client = mqtt.Client(protocol=mqtt.MQTTv311)
 
-# Set username and password if provided
-if username and password:
-    client.username_pw_set(username, password)
+if __name__ == "__main__":
+    # Create an MQTT client instance
+    client = mqtt.Client(protocol=mqtt.MQTTv311)
 
-# Assign callback functions
-client.on_connect = on_connect
-client.on_message = on_message
+    # Set username and password if provided
+    if username and password:
+        client.username_pw_set(username, password)
 
-# Connect to the broker
-client.connect(broker, 1883, 60)
+    # Assign callback functions
+    client.on_connect = on_connect
+    client.on_message = on_message
 
-# Start the MQTT loop
-client.loop_forever()
+    # Connect to the broker
+    try:
+        client.connect(broker, 1883, 60)
+        # Start the MQTT loop
+        client.loop_forever()
+    except Exception as e:
+        print(f"Failed to start MQTT handler: {e}")
