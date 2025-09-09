@@ -1,5 +1,8 @@
 #!/bin/bash
 
+echo "Setting NOFILE limit to 65536"
+ulimit -n 65536
+
 # Copy the custom cupsd.conf file
 if [ -f /app/cupsd.conf ]; then
   echo "Copying custom cupsd.conf..."
