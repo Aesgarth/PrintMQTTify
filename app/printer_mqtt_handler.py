@@ -84,13 +84,20 @@ def generate_pdf(title, message):
         # Split message into lines
         lines = message.split('\n')
         line_height = 12  # Line height in points
-        total_height = margin + (len(lines) + 3) * line_height  # Extra lines for title and footer
+        
+        # Calculate the required height for the content
+        calculated_height = margin + (len(lines) + 3) * line_height  # Extra lines for title and footer
+
+        # **FIX:** Ensure the page height is always greater than the width for portrait orientation
+        page_height = max(calculated_height, page_width + 1)
 
         pdf_path = "/tmp/print_job.pdf"
-        c = canvas.Canvas(pdf_path, pagesize=(page_width, total_height))
+        c = canvas.Canvas(pdf_path, pagesize=(page_width, page_height))
 
+        # We need to start drawing from the top of the page
+        y = page_height - margin
+        
         # Title Section
-        y = total_height - margin
         c.setFont("Helvetica-Bold", 12)
         c.drawString(margin, y, title)
 
